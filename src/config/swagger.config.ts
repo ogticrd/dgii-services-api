@@ -1,23 +1,30 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Type } from '@nestjs/common';
 
-const title = 'DGII Services';
-const description = 'DGII Services API definition.';
+interface SwaggerOptions {
+  title: string;
+  description: string;
+  version: string;
+  uri: string;
+  app: INestApplication;
+  module?: Type<any>;
+}
 
 /**
  * Setup swagger in the application boostrap
- * @param app {INestApplication}
+ * @param swaggerOptions {SwaggerOptions}
  */
-export const configSwagger = (app: INestApplication, apiVersion: string) => {
+export const createSwaggerDocument = (swaggerOptions: SwaggerOptions) => {
   const options = new DocumentBuilder()
-    .setTitle(title)
-    .setDescription(description)
-    .setVersion(apiVersion)
+    .setTitle(swaggerOptions.title)
+    .setDescription(swaggerOptions.description)
+    .setVersion(swaggerOptions.version)
     .build();
 
-  const document = SwaggerModule.createDocument(app, options, {
+  const document = SwaggerModule.createDocument(swaggerOptions.app, options, {
+    include: [swaggerOptions.module],
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   });
 
-  SwaggerModule.setup(`${apiVersion}/dgii/api`, app, document);
+  SwaggerModule.setup(swaggerOptions.uri, swaggerOptions.app, document);
 };
