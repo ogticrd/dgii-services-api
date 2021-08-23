@@ -4,7 +4,8 @@ import * as helmet from 'helmet';
 import * as compression from 'compression';
 
 import { AppModule } from './app.module';
-import { configSwagger } from './config';
+import { createSwaggerDocument } from './config';
+import { ContributorsModule } from '@modules/contributors/contributors.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +24,14 @@ async function bootstrap() {
   );
   app.enableVersioning();
 
-  configSwagger(app, AppModule.apiVersion);
+  createSwaggerDocument({
+    title: 'DGII Services',
+    version: AppModule.apiVersion,
+    description: 'DGII Services API definition',
+    app,
+    uri: `${AppModule.apiVersion}/dgii/contributors/api`,
+    module: ContributorsModule,
+  });
 
   await app.listen(AppModule.port);
 }

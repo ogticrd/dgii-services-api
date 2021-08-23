@@ -11,7 +11,7 @@ import { ContributorsService } from './contributors.service';
 import { ResponseContributorDto } from './dto';
 import { RncValidatorGuard } from './guards';
 
-@Controller({ path: 'contributors', version: '1' })
+@Controller({ path: 'dgii/contributors', version: '1' })
 export class ContributorsController {
   constructor(private readonly contributorService: ContributorsService) {}
 
