@@ -1,5 +1,6 @@
 import { TransformInterceptor } from '@common/interceptors';
 import {
+  CacheInterceptor,
   Controller,
   Get,
   Param,
@@ -17,14 +18,20 @@ export class ContributorsController {
   constructor(private readonly contributorService: ContributorsService) {}
 
   @Get(':rnc/info/basic')
-  @UseInterceptors(new TransformInterceptor(ResponseContributorDto))
+  @UseInterceptors(
+    new TransformInterceptor(ResponseContributorDto),
+    CacheInterceptor,
+  )
   @UseGuards(RncValidatorGuard)
   getContributors(@Param('rnc') rnc: string) {
     return this.contributorService.getContributors(rnc);
   }
 
   @Get('search')
-  @UseInterceptors(new TransformInterceptor(ResponseContributorDto))
+  @UseInterceptors(
+    new TransformInterceptor(ResponseContributorDto),
+    CacheInterceptor,
+  )
   getContributorByName(@Query('name') name: string) {
     return this.contributorService.getContributorByName(name);
   }

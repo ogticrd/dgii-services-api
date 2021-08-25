@@ -60,10 +60,10 @@ export class ContributorsService {
 
     return new Promise((res, rej) => {
       const args = {
-        value: '', //name,
+        value: name,
         patronBusqueda: SEARCH_BY_NAME_CODE,
-        inicioFilas: 1, //SEARCH_FROM,
-        filaFilas: 10000, //ELEMENTS_PER_PAGE,
+        inicioFilas: SEARCH_FROM,
+        filaFilas: ELEMENTS_PER_PAGE,
         IMEI: '',
       };
 
