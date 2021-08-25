@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Client } from 'soap';
 
 import { SOAP } from '@modules/soap/soap.module';
@@ -55,32 +60,77 @@ export class ContributorsService {
 
     return new Promise((res, rej) => {
       const args = {
-        value: name,
+        value: '', //name,
         patronBusqueda: SEARCH_BY_NAME_CODE,
-        inicioFilas: SEARCH_FROM,
-        filaFilas: ELEMENTS_PER_PAGE,
+        inicioFilas: 1, //SEARCH_FROM,
+        filaFilas: 10000, //ELEMENTS_PER_PAGE,
         IMEI: '',
       };
 
-      this.soapService.GetContribuyentes(args, function (err, result) {
+      this.soapService.GetContribuyentes(
+        args,
+        function (err, result) {
+          if (err) {
+            rej(
+              new BadRequestException({
+                valid: false,
+                message: err.message,
+              }),
+            );
+          }
+
+          const isValidRequest =
+            result &&
+            result.GetContribuyentesResult &&
+            result.GetContribuyentesResult !== '0';
+
+          if (!isValidRequest) {
+            res({ data: [], valid: true });
+          }
+
+          const data = result.GetContribuyentesResult.split('@@@').map(
+            JSON.parse,
+          );
+
+          res({ data, valid: true });
+        },
+        {
+          timeout: 10000,
+        },
+      );
+    });
+  }
+
+  async getContributorsCount() {
+    return new Promise((res, rej) => {
+      const args = {
+        value: '',
+        IMEI: '',
+      };
+
+      this.soapService.GetContribuyentesCount(args, function (err, result) {
         if (err) {
-          rej(err);
+          rej(
+            new BadRequestException({
+              valid: false,
+              message: err.message,
+            }),
+          );
         }
 
         const isValidRequest =
           result &&
-          result.GetContribuyentesResult &&
-          result.GetContribuyentesResult !== '0';
+          result.GetContribuyentesCountResult &&
+          result.GetContribuyentesCountResult !== '0';
 
         if (!isValidRequest) {
           res({ data: [], valid: true });
         }
 
-        const data = result.GetContribuyentesResult.split('@@@').map(
-          JSON.parse,
-        );
-
-        res({ data, valid: true });
+        res({
+          data: { count: result.GetContribuyentesCountResult },
+          valid: true,
+        });
       });
     });
   }

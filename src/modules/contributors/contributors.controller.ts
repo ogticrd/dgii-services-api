@@ -28,4 +28,9 @@ export class ContributorsController {
   getContributorByName(@Query('name') name: string) {
     return this.contributorService.getContributorByName(name);
   }
+
+  @Get('count')
+  getContributorsCount() {
+    return this.contributorService.getContributorsCount();
+  }
 }
