@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,7 +19,13 @@ export class ContributorsController {
   @Get(':rnc/info/basic')
   @UseInterceptors(new TransformInterceptor(ResponseContributorDto))
   @UseGuards(RncValidatorGuard)
-  getData(@Param('rnc') rnc: string) {
-    return this.contributorService.main(rnc);
+  getContributors(@Param('rnc') rnc: string) {
+    return this.contributorService.getContributors(rnc);
+  }
+
+  @Get('search')
+  @UseInterceptors(new TransformInterceptor(ResponseContributorDto))
+  getContributorByName(@Query('name') name: string) {
+    return this.contributorService.getContributorByName(name);
   }
 }
