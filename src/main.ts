@@ -29,7 +29,7 @@ async function bootstrap() {
     version: AppModule.apiVersion,
     description: 'DGII Services API definition',
     app,
-    uri: `${AppModule.apiVersion}/dgii/contributors/api`,
+    uri: `${AppModule.apiVersion}/contributors/api`,
     module: ContributorsModule,
   });
 
