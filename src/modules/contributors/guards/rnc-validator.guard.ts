@@ -13,11 +13,15 @@ export class RncValidatorGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const RNC_REQUIRED_LENGTH = 9;
+    const CEDULA_REQUIRED_LENGTH = 11;
     const request: Request = context.switchToHttp().getRequest();
 
     const { rnc } = request.params;
 
-    if (rnc.length !== RNC_REQUIRED_LENGTH) {
+    if (
+      rnc.length !== RNC_REQUIRED_LENGTH &&
+      rnc.length !== CEDULA_REQUIRED_LENGTH
+    ) {
       throw new BadRequestException({
         valid: false,
         message: 'Invalid RNC',
