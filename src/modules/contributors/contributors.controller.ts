@@ -15,7 +15,7 @@ import { RncValidatorGuard } from './guards';
 export class ContributorsController {
   constructor(private readonly contributorService: ContributorsService) {}
 
-  @Get(':rnc')
+  @Get(':rnc/info/basic')
   @UseInterceptors(new TransformInterceptor(ResponseContributorDto))
   @UseGuards(RncValidatorGuard)
   getData(@Param('rnc') rnc: string) {
