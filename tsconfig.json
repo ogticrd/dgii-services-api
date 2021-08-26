@@ -6,6 +6,9 @@
       ],
       "@common/*": [
         "./src/common/*"
+      ],
+      "@config/*": [
+        "./src/config/*"
       ]
     },
     "module": "commonjs",
