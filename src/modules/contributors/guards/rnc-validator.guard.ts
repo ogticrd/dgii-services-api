@@ -5,6 +5,7 @@ import {
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
+import { ErrorDefinition } from '@common/enums';
 import { Request } from 'express';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class RncValidatorGuard implements CanActivate {
       throw new BadRequestException({
         valid: false,
         message: 'Invalid RNC',
+        errorCode: ErrorDefinition.INVALID_RNC,
       });
     }
 
