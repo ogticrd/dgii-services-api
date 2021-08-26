@@ -72,7 +72,7 @@ jobs:
           service: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}-${{ needs.versioning.outputs.api_version }}
           credentials: ${{ secrets.GAR_JSON_KEY }}
           region: ${{ secrets.GCP_REGION }}
-          env_vars: DGII_WSDL_URI=${{ secrets.DGII_WSDL_URI }},API_VERSION=${{ needs.versioning.outputs.api_version }}
+          env_vars: DGII_WSDL_URI=${{ secrets.DGII_WSDL_URI }},API_VERSION=${{ needs.versioning.outputs.api_version }},DGII_WSDL_PAGINATION_LIMIT=${{ needs.versioning.outputs.DGII_WSDL_PAGINATION_LIMIT }}
 
       - name: Testing Service By Curl
         run: curl "${{ steps.deploy.outputs.url }}"
