@@ -1,11 +1,11 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
+import * as compression from 'compression';
 import { NestFactory } from '@nestjs/core';
 import * as helmet from 'helmet';
-import * as compression from 'compression';
 
+import { configureSwaggerModules } from '@config/index';
+import { HttpExceptionFilter } from '@common/filters';
 import { AppModule } from './app.module';
-import { createSwaggerDocument } from './config';
-import { ContributorsModule } from '@modules/contributors/contributors.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,16 +22,10 @@ async function bootstrap() {
       },
     }),
   );
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.enableVersioning();
 
-  createSwaggerDocument({
-    title: 'DGII Services',
-    version: AppModule.apiVersion,
-    description: 'DGII Services API definition',
-    app,
-    uri: `${AppModule.apiVersion}/contributors/api`,
-    module: ContributorsModule,
-  });
+  configureSwaggerModules(app);
 
   await app.listen(AppModule.port);
 }
