@@ -16,8 +16,6 @@
 
 ## Descripción y contexto
 
----
-
 Este servicio es un [wrapper](https://es.quora.com/Qu%C3%A9-es-exactamente-un-wrapper-API-Y-en-qu%C3%A9-se-diferencia-de-solo-una-API) de los servicios de información de la [Dirección General de Impuestos Internos (DGII)](https://dgii.gov.do/wsMovilDGII/WSMovilDGII.asmx).
 
 ## Referencia del servicio
