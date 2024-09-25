@@ -20,4 +20,8 @@ export class EnvironmentSchema {
   @IsString()
   @IsNotEmpty()
   GCP_CREDENTIALS: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GOOGLE_PROJECT_ID: string;
 }

@@ -77,7 +77,8 @@ jobs:
             NODE_ENV=${{ env.NODE_ENV }},
             DGII_WSDL_URI=${{ secrets.DGII_WSDL_URI }},
             DGII_WSDL_PAGINATION_LIMIT=${{ secrets.DGII_WSDL_PAGINATION_LIMIT }},
-            GCP_CREDENTIALS=${{ secrets.GCP_CREDENTIALS }}
+            GCP_CREDENTIALS=${{ secrets.GCP_CREDENTIALS }},
+            GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }}
 
       - name: Allow unauthenticated calls to the service
         run: |
