@@ -1,1 +1,1 @@
-export { RncValidatorGuard } from './rnc-validator.guard';
+export * from './rnc-validator.guard';

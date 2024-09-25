@@ -1,35 +1,93 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  Logger,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import * as compression from 'compression';
-import { NestFactory } from '@nestjs/core';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 
-import { configureSwaggerModules } from '@config/index';
-import { HttpExceptionFilter } from '@common/filters';
+import {
+  GlobalExceptionFilter,
+  useSwagger,
+  InternalDisabledLogger,
+} from '@core';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors();
+class Application {
+  private app: INestApplication;
+  private logger = new Logger('NestApplication');
 
-  app.use(helmet());
-  app.use(compression());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.enableVersioning();
+  async init(): Promise<void> {
+    this.app = await NestFactory.create(AppModule, {
+      logger: new InternalDisabledLogger(),
+    });
 
-  configureSwaggerModules(app);
+    this.setupVersioning();
+    this.setupGlobalFilters();
+    this.setupGlobalPipes();
+    this.setupSwagger();
+    this.app.enableShutdownHooks();
+    this.app.enableCors();
+    this.app.use(helmet());
+    this.app.use(compression());
 
-  await app.listen(AppModule.port);
+    const server = await this.app.listen(AppModule.port);
+    this.logger.log(`API is running on: ${await this.app.getUrl()}`);
+
+    this.handleTerminationSignals(server);
+  }
+
+  private setupVersioning(): void {
+    this.app.enableVersioning({
+      type: VersioningType.URI,
+    });
+  }
+
+  private setupGlobalFilters(): void {
+    const httpAdapterHost = this.app.get(HttpAdapterHost);
+    this.app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
+  }
+
+  private setupGlobalPipes(): void {
+    this.app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        transformOptions: {
+          exposeUnsetFields: false,
+          enableImplicitConversion: true,
+        },
+      }),
+    );
+  }
+
+  private setupSwagger(): void {
+    useSwagger(this.app);
+  }
+
+  private handleTerminationSignals(server: any): void {
+    process.stdin.resume();
+
+    const handleTermination = () => {
+      server.close((err: any) => {
+        if (err) {
+          this.logger.error('Server is shutting down', err);
+          process.exit(1);
+        } else {
+          this.logger.warn('Server closed gracefully');
+          process.exit(0);
+        }
+      });
+    };
+
+    process.on('SIGINT', handleTermination);
+    process.on('SIGTERM', handleTermination);
+  }
 }
 
-bootstrap().then(() => {
-  Logger.log('Application is up and running 🚀');
-});
+(async () => {
+  const application = new Application();
+  await application.init();
+})();

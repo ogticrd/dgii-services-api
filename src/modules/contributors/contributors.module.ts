@@ -1,25 +1,19 @@
-import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
 
 import { ContributorsController } from './contributors.controller';
 import { ContributorsService } from './contributors.service';
-import { SoapModule } from '@modules/soap/soap.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { SoapConnectionFactory } from './soap.provider';
 
 @Module({
   imports: [
-    SoapModule,
     CacheModule.register({
-      ttl: 3600,
-      max: 100,
+      ttl: 18_000,
+      max: 200,
     }),
   ],
   controllers: [ContributorsController],
-  providers: [
-    ContributorsService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
-  ],
+  providers: [SoapConnectionFactory, ContributorsService],
+  exports: [SoapConnectionFactory],
 })
 export class ContributorsModule {}

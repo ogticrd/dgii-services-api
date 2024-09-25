@@ -1,15 +1,8 @@
 {
   "compilerOptions": {
     "paths": {
-      "@modules/*": [
-        "./src/modules/*"
-      ],
-      "@common/*": [
-        "./src/common/*"
-      ],
-      "@config/*": [
-        "./src/config/*"
-      ]
+      "@modules/*": ["src/modules/*"],
+      "@core": ["src/core"]
     },
     "module": "commonjs",
     "declaration": true,

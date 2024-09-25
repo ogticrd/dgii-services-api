@@ -75,6 +75,9 @@ Este servicio es un [wrapper](https://es.quora.com/Qu%C3%A9-es-exactamente-un-wr
 
 ## Autores
 
-Septiembre 2021
-
 - [Marluan Espiritusanto](https://github.com/marluanespiritusanto)
+
+## Actualizaciones
+
+- Septiembre 2021
+- Septiembre 2024

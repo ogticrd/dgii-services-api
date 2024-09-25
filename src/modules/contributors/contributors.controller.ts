@@ -1,6 +1,4 @@
-import { TransformInterceptor } from '@common/interceptors';
 import {
-  CacheInterceptor,
   Controller,
   Get,
   Param,
@@ -8,36 +6,36 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { ApiTags } from '@nestjs/swagger';
 
 import { ContributorsService } from './contributors.service';
-import { ResponseContributorDto } from './dto';
+import { ContributorResponseDto } from './dtos';
 import { RncValidatorGuard } from './guards';
+import { Ok } from '@core';
 
+@ApiTags('Contributors')
 @Controller({ path: 'contributors', version: '1' })
 export class ContributorsController {
-  constructor(private readonly contributorService: ContributorsService) {}
+  constructor(private readonly service: ContributorsService) {}
 
   @Get(':rnc/info/basic')
-  @UseInterceptors(
-    new TransformInterceptor(ResponseContributorDto),
-    CacheInterceptor,
-  )
+  @Ok(ContributorResponseDto)
   @UseGuards(RncValidatorGuard)
+  @UseInterceptors(CacheInterceptor)
   getContributors(@Param('rnc') rnc: string) {
-    return this.contributorService.getContributors(rnc);
+    return this.service.getContributors(rnc);
   }
 
   @Get('search')
-  @UseInterceptors(
-    new TransformInterceptor(ResponseContributorDto),
-    CacheInterceptor,
-  )
+  @Ok(ContributorResponseDto)
+  @UseInterceptors(CacheInterceptor)
   getContributorByName(@Query('name') name: string) {
-    return this.contributorService.getContributorByName(name);
+    return this.service.getContributorByName(name);
   }
 
   @Get('count')
   getContributorsCount() {
-    return this.contributorService.getContributorsCount();
+    return this.service.getContributorsCount();
   }
 }

@@ -1,17 +1,15 @@
 import {
   BadRequestException,
   CanActivate,
-  Logger,
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
-import { ErrorDefinition } from '@common/enums';
 import { Request } from 'express';
+
+import { ErrorDefinition } from '@core';
 
 @Injectable()
 export class RncValidatorGuard implements CanActivate {
-  private readonly logger = new Logger(RncValidatorGuard.name);
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const RNC_REQUIRED_LENGTH = 9;
     const CEDULA_REQUIRED_LENGTH = 11;

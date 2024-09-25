@@ -1,22 +1,21 @@
-import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common';
 
-import { ContributorsModule } from './modules/contributors/contributors.module';
-import { SoapModule } from './modules/soap/soap.module';
+import { ContributorsModule } from '@modules/contributors';
+import { EnvironmentSchema, validate } from '@core';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, validate }),
     ContributorsModule,
-    SoapModule,
   ],
 })
 export class AppModule {
   static port: number;
-  static apiVersion: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService<EnvironmentSchema>,
+  ) {
     AppModule.port = +this.configService.get('PORT');
-    AppModule.apiVersion = this.configService.get('API_VERSION');
   }
 }
