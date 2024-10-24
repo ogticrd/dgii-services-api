@@ -16,6 +16,7 @@ jobs:
   build:
     uses: ./.github/workflows/build-docker-image.yml
     with:
+      environment: production
       dockerfile_path: ./Dockerfile
       dockerfile_target: release
       app_name: ${{ vars.APP_NAME }}

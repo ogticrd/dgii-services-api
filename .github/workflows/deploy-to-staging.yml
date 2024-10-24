@@ -24,6 +24,7 @@ jobs:
   build:
     uses: ./.github/workflows/build-docker-image.yml
     with:
+      environment: staging
       dockerfile_path: ./Dockerfile
       dockerfile_target: release
       app_name: ${{ vars.APP_NAME }}
@@ -35,7 +36,7 @@ jobs:
     uses: ./.github/workflows/cloudrun-deploy.yml
     with:
       default_name: master
-      environment: production
+      environment: staging
       project: ${{ vars.GCP_PROJECT }}
       region: us-east1
       image: ${{ vars.GCP_IMAGE}}@${{ needs.build.outputs.image_digest }}
